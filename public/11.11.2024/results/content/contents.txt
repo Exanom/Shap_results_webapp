@@ -1,0 +1,4 @@
+linear_abrupt1000[20]
+linear_gradual_rotation1000[20]
+linear_sudden_rotation1000[20]
+linear_recurrent_rotation1000[20]

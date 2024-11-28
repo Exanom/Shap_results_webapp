@@ -1,95 +1,57 @@
+'use client'
 import Image from "next/image";
 import styles from "./page.module.css";
-
+import { useEffect, useState } from "react";
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+   const [links, setLinks] = useState([''])
+   const [sets, setSets] = useState([''])
+   const [currentSet, setCurrentSet] = useState('')
+  useEffect(() => {
+    fetch('sets.txt')
+    .then((res)=>{return res.text()})
+    .then((txt) => {
+      var arr = txt.split('\r\n')
+      arr.reverse()
+      setSets(arr);
+      setCurrentSet(arr[0])
+    })
+  }, [])
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  useEffect(()=> {
+    if(currentSet!='') {
+      fetch(currentSet+'/results/content/contents.txt')
+      .then((res) =>{return res.text()})
+      .then((txt)=>{
+        var arr = txt.split('\r\n')
+        arr = arr.filter(n => n)
+        setLinks(arr)
+      })
+    }
+  },[currentSet])
+  
+
+/*
+{links.map((link) => {
+        return <a href={link.path + '/graphs'} key={link.path}   className="w-full block"><input type='button' value={link.path} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded w-full"/></a>
+      })}      
+*/
+  return (
+    <div >
+      <form className="max-w-sm mx-auto">
+      <select defaultValue={currentSet} onChange={(ev)=>{setCurrentSet(ev.target.value)}} className="mx-auto my-2 block w-full bg-gray-50 border border-gray-300  text-gray-900 text-sm">  
+            {sets.map((s) => {
+              return <option key={s} value={s}>{s}</option>
+            })}
+        </select>
+      </form>
+
+        <div className="grid grid-cols-3 gap-4 m-2">
+          {links.map((link) => {
+            console.log(link)
+            return <a href={currentSet + '/' + link + '/graphs'} key={link}   className="w-full block"><input type='button' value={link} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded w-full"/></a>
+          })}      
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        
     </div>
   );
 }
