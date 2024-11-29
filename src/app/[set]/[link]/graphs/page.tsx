@@ -36,7 +36,7 @@ export default function Page() {
         header:true,
         skipEmptyLines:true,
         complete: (csv)=>{
-          console.log(csv)
+          
           let arr: any[] = csv.data;
           for(let i=0;i<arr.length;i++) {
             if(i==0) {

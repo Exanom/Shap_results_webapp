@@ -10,7 +10,12 @@ export default function Home() {
     fetch('sets.txt')
     .then((res)=>{return res.text()})
     .then((txt) => {
-      var arr = txt.split('\r\n')
+      if(txt.includes('\r\n')) {
+        var arr = txt.split('\r\n')
+      }
+      else {
+        var arr = txt.split('\n')
+      }
       arr.reverse()
       setSets(arr);
       setCurrentSet(arr[0])
@@ -22,7 +27,12 @@ export default function Home() {
       fetch(currentSet+'/results/content/contents.txt')
       .then((res) =>{return res.text()})
       .then((txt)=>{
-        var arr = txt.split('\r\n')
+        if(txt.includes('\r\n')) {
+          var arr = txt.split('\r\n')
+        }
+        else {
+          var arr = txt.split('\n')
+        }
         arr = arr.filter(n => n)
         setLinks(arr)
       })
